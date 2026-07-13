@@ -1,5 +1,6 @@
 package roomshare.service;
 
+import roomshare.config.JwtUtil;
 import roomshare.domain.User;
 import roomshare.dto.LoginRequest;
 import roomshare.dto.UserJoinRequest;
@@ -15,6 +16,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder; // 암호화 기계 주입
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public void join(UserJoinRequest request) {
@@ -49,7 +51,7 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        // 3. 검증이 통과되면 우선 성공 메시지 반환
-        return "로그인에 성공했습니다!";
+        // 3. 유저 이메일을 새긴 JWT 토큰을 발급해 반환
+        return jwtUtil.createToken(user.getEmail());
     }
 }

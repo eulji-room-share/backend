@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import roomshare.dto.LoginRequest;
 import roomshare.dto.UserJoinRequest;
+import roomshare.dto.UserResponse;
 import roomshare.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,13 +35,13 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<String> getMyInfo(Authentication authentication) {
-        // JwtFilter 통과한 사람만 이 코드를 실행할 수 있음...
-        // authentication 안에는 '유저 이메일'이 들어있음...
+    public ResponseEntity<UserResponse> getMyInfo(Authentication authentication) {
         String email = authentication.getName();
 
-        // 나중에는 여기서 이메일로 DB를 조회해서 닉네임, 프로필 사진 등을 응답하도록...
-        // 지금은 토큰 검사가 잘 되는지 확인하기 위해 이메일만 반환..
-        return ResponseEntity.ok("현재 안전하게 로그인된 사용자 이메일: " + email);
+        // 서비스를 통해 유저 정보 DTO를 가져옴....
+        UserResponse userResponse = userService.getMyInfo(email);
+
+        // 200 OK와 함께 회원 정보 객체를 반환..(JSON)
+        return ResponseEntity.ok(userResponse);
     }
 }

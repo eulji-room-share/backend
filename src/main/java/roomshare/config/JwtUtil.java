@@ -30,4 +30,16 @@ public class JwtUtil {
                 .signWith(key, SignatureAlgorithm.HS256) // 비밀키로 위조 방지 서명
                 .compact(); // 압축해서 문자열로 반환
     }
+
+    // 토큰 안에서 이메일 꺼내기
+    public String getEmail(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
+                .getBody().getSubject();
+    }
+
+    // 토큰 유효기간이 지났는지 확인하기
+    public boolean isExpired(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
+                .getBody().getExpiration().before(new Date());
+    }
 }

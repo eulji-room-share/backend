@@ -1,5 +1,6 @@
 package roomshare.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,10 +8,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtUtil jwtUtil;
 
     // 암호화 기계
     @Bean
@@ -28,7 +33,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/join", "/api/users/login").permitAll()
                         // 3. 그 외의 모든 요청은 로그인(인증)을 해야만 접근 가능
                         .anyRequest().authenticated()
-                );
+                )
+                // 시큐리티의 기본 로그인 검사기보다 JwtFilter를 먼저 실행하라는 명령어
+                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

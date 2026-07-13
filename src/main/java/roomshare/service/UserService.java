@@ -33,8 +33,8 @@ public class UserService {
         User user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .nickname(request.getNickname()) // ✨ 추가
-                .profileImageUrl("https://example.com/default-profile.png") // ✨ 회원가입 시 기본 이미지 세팅
+                .nickname(request.getNickname())
+                .profileImageUrl("https://example.com/default-profile.png") // 회원가입 시 기본 이미지 세팅
                 .build();
 
         // 4. DB에 저장
@@ -66,7 +66,6 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         // 2. 조회한 회원 정보를 안전하게 DTO로 변환하여 반환
-        // (현재 User 엔티티에 nickname이나 profileImageUrl이 없다면 일단 가짜 데이터를 넣거나 필드를 조정하셔도 됩니다!)
         return new UserResponse(
                 user.getEmail(),
                 user.getNickname(),

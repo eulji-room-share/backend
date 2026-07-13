@@ -21,16 +21,16 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        // 1. 프론트엔드가 보낸 요청 헤더에서 "Authorization" 부분(토큰이 담긴 곳)을 꺼냅니다.
+        // 1. 프론트엔드가 보낸 요청 헤더에서 "Authorization" 부분(토큰이 담긴 곳)을 꺼냄....
         final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        // 2. 토큰이 없거나, "Bearer "로 시작하지 않으면 통과시키지 않고 다음으로 넘깁니다. (로그인 안 한 상태)
+        // 2. 토큰이 없거나, "Bearer "로 시작하지 않으면 통과시키지 않고 다음으로 넘김... (로그인 안 한 상태)
         if (authorization == null || !authorization.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 3. "Bearer " 글자를 떼어내고 진짜 순수 토큰 문자열만 추출합니다.
+        // 3. "Bearer " 글자를 떼어내고 진짜 순수 토큰 문자열만 추출....
         String token = authorization.split(" ")[1];
 
         // 4. JwtUtil의 토큰 만료 검증 메서드를 통과했는지 확인

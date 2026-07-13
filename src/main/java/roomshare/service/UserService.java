@@ -1,6 +1,7 @@
 package roomshare.service;
 
 import roomshare.domain.User;
+import roomshare.dto.LoginRequest;
 import roomshare.dto.UserJoinRequest;
 import roomshare.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +35,21 @@ public class UserService {
 
         // 4. DB에 저장
         userRepository.save(user);
+
+
+    }
+
+    public String login(LoginRequest request) {
+        // 1. 프론트가 보낸 이메일로 DB에서 유저 찾기 (없으면 예외 발생)
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
+
+        // 2. 비밀번호 일치 여부 확인 (스프링 시큐리티의 matches 기법 활용)
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // 3. 검증이 통과되면 우선 성공 메시지 반환
+        return "로그인에 성공했습니다!";
     }
 }

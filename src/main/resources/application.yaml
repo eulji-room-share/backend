@@ -1,15 +1,16 @@
 spring:
+  profiles:
+    include: secret # application-secret.yml 파일을 같이 읽어오도록,,,
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/roomshare?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/roomshare?serverTimezone=Asia/Seoul
     username: root
-    password: 1234
+
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        show_sql: true
         format_sql: true
-jwt:
-  secret: 룸쉐어프로젝트를위한아주아주길고안전한비밀키입니다절대들키면안됩니다1234567890
+        show_sql: true
+

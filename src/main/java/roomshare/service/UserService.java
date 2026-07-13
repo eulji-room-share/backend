@@ -32,8 +32,9 @@ public class UserService {
         // 3. DTO에 담긴 데이터와 '암호화된 비밀번호'로 새 User 엔티티 생성
         User user = User.builder()
                 .email(request.getEmail())
-                .password(encodedPassword) // 암호화된 비밀번호가 들어감..
-                .nickname(request.getNickname())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .nickname(request.getNickname()) // ✨ 추가
+                .profileImageUrl("https://example.com/default-profile.png") // ✨ 회원가입 시 기본 이미지 세팅
                 .build();
 
         // 4. DB에 저장
@@ -68,8 +69,8 @@ public class UserService {
         // (현재 User 엔티티에 nickname이나 profileImageUrl이 없다면 일단 가짜 데이터를 넣거나 필드를 조정하셔도 됩니다!)
         return new UserResponse(
                 user.getEmail(),
-                "김자취", // 임시로 넣어둔 닉네임 (추후 user.getNickname()으로 변경)
-                "https://example.com/profile.png" // 임시 프로필 이미지
+                user.getNickname(),
+                user.getProfileImageUrl()
         );
     }
 }

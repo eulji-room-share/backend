@@ -72,4 +72,14 @@ public class UserService {
                 user.getProfileImageUrl()
         );
     }
+
+    @Transactional
+    public void deleteAccount(String email) {
+        // 1. 토큰에서 가져온 이메일로 유저가 존재하는지 확인
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        // 2. DB에서 유저 삭제
+        userRepository.delete(user);
+    }
 }

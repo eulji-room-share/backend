@@ -80,9 +80,15 @@ public class RoomPostService {
         return new RoomPostResponse(roomPost);
     }
 
-    public RoomPostResponse updateRoomPost(Long id, RoomPostUpdateRequest request) {
+    // 1. 수정 메서드: email 파라미터 추가 및 권한 검증 로직 추가
+    public RoomPostResponse updateRoomPost(Long id, RoomPostUpdateRequest request, String email) {
         RoomPost roomPost = roomPostRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다. id=" + id));
+
+        // 게시글 작성자의 이메일과 요청자의 이메일이 다르면 예외 발생...
+        if (!roomPost.getSeller().getEmail().equals(email)) {
+            throw new IllegalArgumentException("본인이 작성한 게시글만 수정할 수 있습니다.");
+        }
 
         roomPost.update(
                 request.getTitle(),
@@ -97,9 +103,15 @@ public class RoomPostService {
         return new RoomPostResponse(roomPost);
     }
 
-    public void deleteRoomPost(Long id) {
+    // 2. 삭제 메서드: email 파라미터 추가 및 권한 검증 로직 추가
+    public void deleteRoomPost(Long id, String email) {
         RoomPost roomPost = roomPostRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다. id=" + id));
+
+        // 본인이 아니면 삭제 불가능..
+        if (!roomPost.getSeller().getEmail().equals(email)) {
+            throw new IllegalArgumentException("본인이 작성한 게시글만 삭제할 수 있습니다.");
+        }
 
         roomPostRepository.delete(roomPost);
     }

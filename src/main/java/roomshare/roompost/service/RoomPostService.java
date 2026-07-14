@@ -2,6 +2,8 @@ package roomshare.roompost.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import roomshare.domain.User; // User 엔티티가 있는 패키지로 import 경로 맞추기...
+import roomshare.repository.UserRepository; // UserRepository가 있는 패키지로 import 경로 맞추기...
 import roomshare.roompost.dto.RoomPostCreateRequest;
 import roomshare.roompost.dto.RoomPostResponse;
 import roomshare.roompost.dto.RoomPostUpdateRequest;
@@ -16,12 +18,22 @@ import java.util.List;
 public class RoomPostService {
 
     private final RoomPostRepository roomPostRepository;
+    private final UserRepository userRepository; // 1. UserRepository 추가 주입
 
-    public RoomPostService(RoomPostRepository roomPostRepository) {
+    //  2. 생성자에 UserRepository 추가
+    public RoomPostService(RoomPostRepository roomPostRepository, UserRepository userRepository) {
         this.roomPostRepository = roomPostRepository;
+        this.userRepository = userRepository;
     }
 
-    public RoomPostResponse createRoomPost(RoomPostCreateRequest request) {
+    // 3. 로그인한 사용자의 email을 매개변수로 함께 받음...
+    public RoomPostResponse createRoomPost(RoomPostCreateRequest request, String email) {
+
+        // 4. 토큰에서 추출한 이메일로 실제 가입된 유저 정보를 조회...
+        User seller = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다. email=" + email));
+
+        // 5. 생성자에 request.getSellerId() 대신 조회한 User 객체(seller)를 주입...
         RoomPost roomPost = new RoomPost(
                 request.getTitle(),
                 request.getContent(),
@@ -30,7 +42,7 @@ public class RoomPostService {
                 request.getLocation(),
                 request.getMoveInDate(),
                 request.getContractEndDate(),
-                request.getSellerId()
+                seller // 변경..
         );
 
         if (request.getImageUrls() != null) {

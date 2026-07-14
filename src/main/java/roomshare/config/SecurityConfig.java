@@ -31,7 +31,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 2. 회원가입과 로그인은 누구나(permitAll) 접근 가능하도록 명단에 추가
                         .requestMatchers("/api/users/join", "/api/users/login").permitAll()
-                        // 3. 그 외의 모든 요청은 로그인(인증)을 해야만 접근 가능
+                        // 3. 에러 처리 경로는 통과
+                        .requestMatchers("/error").permitAll()
+                        // 4. 그 외의 모든 요청은 로그인(인증)을 해야만 접근 가능
                         .anyRequest().authenticated()
                 )
                 // 시큐리티의 기본 로그인 검사기보다 JwtFilter를 먼저 실행하라는 명령어

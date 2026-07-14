@@ -27,7 +27,7 @@ public class RoomPostResponse {
         this.location = roomPost.getLocation();
         this.moveInDate = roomPost.getMoveInDate();
         this.contractEndDate = roomPost.getContractEndDate();
-        this.sellerId = roomPost.getSellerId();
+        this.sellerId = roomPost.getSeller().getId();
 
         this.images = roomPost.getImages()
                 .stream()

@@ -1,6 +1,7 @@
 package roomshare.roompost.entity;
 
 import jakarta.persistence.*;
+import roomshare.domain.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,7 +29,10 @@ public class RoomPost {
 
     private LocalDate contractEndDate;
 
-    private Long sellerId;
+    // private Long sellerId; 대신 User 도메인과 연결..
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
+    private User seller;
 
     @OneToMany(mappedBy = "roomPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomImage> images = new ArrayList<>();
@@ -44,7 +48,7 @@ public class RoomPost {
             String location,
             LocalDate moveInDate,
             LocalDate contractEndDate,
-            Long sellerId
+            User seller // Long sellerId 대신 User 객체를 받도록 변경..
     ) {
         this.title = title;
         this.content = content;
@@ -53,7 +57,7 @@ public class RoomPost {
         this.location = location;
         this.moveInDate = moveInDate;
         this.contractEndDate = contractEndDate;
-        this.sellerId = sellerId;
+        this.seller = seller; // 마찬가지로 변경
     }
 
     public void update(
@@ -111,8 +115,9 @@ public class RoomPost {
         return contractEndDate;
     }
 
-    public Long getSellerId() {
-        return sellerId;
+    // getSellerId() 메서드 삭제 후 교체
+    public User getSeller() {
+        return seller;
     }
 
     public List<RoomImage> getImages() {

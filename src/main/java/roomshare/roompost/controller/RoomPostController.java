@@ -1,6 +1,7 @@
 package roomshare.roompost.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication; // 1. 시큐리티 Authentication 임포트 추가
 import org.springframework.web.bind.annotation.*;
 import roomshare.roompost.dto.RoomPostCreateRequest;
 import roomshare.roompost.dto.RoomPostResponse;
@@ -21,8 +22,15 @@ public class RoomPostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RoomPostResponse createRoomPost(@RequestBody RoomPostCreateRequest request) {
-        return roomPostService.createRoomPost(request);
+    public RoomPostResponse createRoomPost(
+            @RequestBody RoomPostCreateRequest request,
+            Authentication authentication // 2. 매개변수에 Authentication 추가 (로그인 유저 정보 가로챔...)
+    ) {
+        // 3. 인증 객체에서 유저의 이메일(또는 ID)을 꺼냄....
+        String email = authentication.getName();
+
+        // 4. 서비스 레이어로 요청 데이터와 이메일을 함께 넘겨줌...
+        return roomPostService.createRoomPost(request, email);
     }
 
     @GetMapping

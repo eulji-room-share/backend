@@ -43,17 +43,25 @@ public class RoomPostController {
         return roomPostService.getRoomPost(id);
     }
 
+    // 1. 수정(PATCH) 컨트롤러: Authentication 추가 및 email 전달
     @PatchMapping("/{id}")
     public RoomPostResponse updateRoomPost(
             @PathVariable Long id,
-            @RequestBody RoomPostUpdateRequest request
+            @RequestBody RoomPostUpdateRequest request,
+            Authentication authentication // 로그인 유저 정보 가져오기
     ) {
-        return roomPostService.updateRoomPost(id, request);
+        String email = authentication.getName(); // 토큰에서 이메일 추출
+        return roomPostService.updateRoomPost(id, request, email); // 서비스로 이메일 전달...
     }
 
+    // 2. 삭제(DELETE) 컨트롤러: Authentication 추가 및 email 전달
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteRoomPost(@PathVariable Long id) {
-        roomPostService.deleteRoomPost(id);
+    public void deleteRoomPost(
+            @PathVariable Long id,
+            Authentication authentication // 로그인 유저 정보 가져오기
+    ) {
+        String email = authentication.getName(); // 토큰에서 이메일 추출
+        roomPostService.deleteRoomPost(id, email); // 서비스로 이메일 전달..
     }
 }

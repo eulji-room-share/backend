@@ -15,7 +15,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
-
+import org.springframework.http.HttpMethod;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -37,13 +37,19 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable) // REST API이므로 CSRF 보안 방패 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        // 회원가입과 로그인은 누구나 접근 가능하도록 명단에 추가
+                        // 1. [추가] 매물 목록(GET) 및 상세 조회(GET)는 로그인 없이도 볼 수 있도록 허용!
+                        .requestMatchers(HttpMethod.GET, "/api/room-posts/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/room-posts").permitAll()
+
+                        // 2. 기존 허용 경로들
                         .requestMatchers("/api/users/join", "/api/users/login").permitAll()
-                        // 에러 처리 경로는 통과
                         .requestMatchers("/error").permitAll()
-                        // 그 외의 모든 요청은 로그인(인증)을 해야만 접근 가능
+
+                        // 그 외의 모든 요청(POST 등록, 수정, 삭제 등)은 로그인 필요
                         .anyRequest().authenticated()
                 )
+
+
                 // 시큐리티의 기본 로그인 검사기보다 JwtFilter를 먼저 실행하라는 명령어
                 .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 

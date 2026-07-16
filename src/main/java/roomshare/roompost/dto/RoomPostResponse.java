@@ -1,22 +1,24 @@
 package roomshare.roompost.dto;
 
+import lombok.Getter;
 import roomshare.roompost.entity.RoomPost;
-
 import java.time.LocalDate;
 import java.util.List;
 
+@Getter
 public class RoomPostResponse {
 
-    private Long id;
-    private String title;
-    private String content;
-    private Integer deposit;
-    private Integer monthlyRent;
-    private String location;
-    private LocalDate moveInDate;
-    private LocalDate contractEndDate;
-    private Long sellerId;
-    private List<RoomImageResponse> images;
+    private final Long id;
+    private final String title;
+    private final String content;
+    private final Integer deposit;
+    private final Integer monthlyRent;
+    private final String location;
+    private final LocalDate moveInDate;
+    private final LocalDate contractEndDate;
+    private final Long sellerId;
+    private final String sellerEmail;
+    private final List<RoomImageResponse> images;
 
     public RoomPostResponse(RoomPost roomPost) {
         this.id = roomPost.getId();
@@ -28,50 +30,7 @@ public class RoomPostResponse {
         this.moveInDate = roomPost.getMoveInDate();
         this.contractEndDate = roomPost.getContractEndDate();
         this.sellerId = roomPost.getSeller().getId();
-
-        this.images = roomPost.getImages()
-                .stream()
-                .map(RoomImageResponse::new)
-                .toList();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public Integer getDeposit() {
-        return deposit;
-    }
-
-    public Integer getMonthlyRent() {
-        return monthlyRent;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public LocalDate getMoveInDate() {
-        return moveInDate;
-    }
-
-    public LocalDate getContractEndDate() {
-        return contractEndDate;
-    }
-
-    public Long getSellerId() {
-        return sellerId;
-    }
-
-    public List<RoomImageResponse> getImages() {
-        return images;
+        this.sellerEmail = roomPost.getSeller().getEmail();
+        this.images = roomPost.getImages().stream().map(RoomImageResponse::new).toList();
     }
 }

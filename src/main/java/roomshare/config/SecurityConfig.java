@@ -60,8 +60,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // 프론트엔드의 Live Server 주소 허용
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5500", "http://127.0.0.1:5500"));
+        // 프론트엔드 주소 허용 versel 활용..
+        // configuration.setAllowedOrigins(...) 대신 OriginPatterns를 사용...
+        // setAllowCredentials(true) 상태에서는 setAllowedOrigins("*")를 쓰면 에러가 나기 때문에 패턴을 사용...
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         // 허용할 HTTP 메서드
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         // 허용할 헤더
